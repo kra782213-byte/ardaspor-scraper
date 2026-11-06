@@ -2,8 +2,8 @@ name: Ardaspor Otomatik Tarayıcı Botu
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # Her 15 dakikada bir çalışır
-  workflow_dispatch: # Manuel çalıştırma butonu
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,12 +17,15 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Dependencies
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+          install-chromedriver: true
+
+      - name: Install Python Dependencies
         run: |
           pip install -r requirements.txt
-          # Chrome ve ChromeDriver kurulumu
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
 
       - name: Run Scraper
         run: python scraper.py
