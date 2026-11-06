@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Dosyayı kaydedebilmesi için izin
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,14 +19,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
-          install-chromedriver: true
-
-      - name: Install Python Dependencies
-        run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
 
       - name: Run Scraper
         run: python scraper.py
