@@ -12,30 +12,37 @@ def get_channels():
     options.add_argument("--window-size=1920,1080")
     
     try:
-        # Kütüphaneye sistemdeki Chrome'u kullanmasını ve yeni sürücü indirmemesini söylüyoruz
-        driver = uc.Chrome(
-            options=options, 
-            use_subprocess=True, 
-            version_main=156  # Sunucudaki mevcut sürüme sabitledik
-        )
+        driver = uc.Chrome(options=options, use_subprocess=True, version_main=156)
     except Exception as e:
-        print(f"[-] Tarayıcı başlatılamadı, varsayılan deneniyor: {e}")
         driver = uc.Chrome(options=options)
 
     m3u_list = ["#EXTM3U"]
     
     try:
+        print("[*] Siteye gidiliyor...")
         driver.get("https://ardaspor39.top")
-        time.sleep(10)
         
+        # Sayfanın ve JavaScript'in tam yüklenmesi için 15 saniye bekle
+        time.sleep(15)
+        
+        # BOTUN NE GÖRDÜĞÜNÜ KAYDET
+        driver.save_screenshot("bot_ekrani.png")
+        with open("sayfa_kaynagi.html", "w", encoding="utf-8") as f:
+            f.write(driver.page_source)
+        print("[+] Botun gördüğü ekran ve HTML kaydedildi.")
+
+        # TV sekmesine tıklamayı dene
         try:
             tv_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'TV')]")
             tv_tab.click()
             time.sleep(5)
+            driver.save_screenshot("bot_ekrani_tv.png") # TV sekmesi açıldıktan sonra da kaydet
         except:
-            pass
+            print("[-] TV sekmesi bulunamadı.")
 
+        # Kanalları ara
         elements = driver.find_elements(By.CSS_SELECTOR, "a[href*='/channel/']")
+        print(f"[*] Bulunan kanal linki sayısı: {len(elements)}")
         
         for el in elements:
             try:
