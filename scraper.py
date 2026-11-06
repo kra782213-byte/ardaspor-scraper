@@ -8,14 +8,25 @@ def get_channels():
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
     
-    # undetected-chromedriver kullanarak başlat
-    driver = uc.Chrome(options=options)
+    try:
+        # Kütüphaneye sistemdeki Chrome'u kullanmasını ve yeni sürücü indirmemesini söylüyoruz
+        driver = uc.Chrome(
+            options=options, 
+            use_subprocess=True, 
+            version_main=156  # Sunucudaki mevcut sürüme sabitledik
+        )
+    except Exception as e:
+        print(f"[-] Tarayıcı başlatılamadı, varsayılan deneniyor: {e}")
+        driver = uc.Chrome(options=options)
+
     m3u_list = ["#EXTM3U"]
     
     try:
         driver.get("https://ardaspor39.top")
-        time.sleep(10) # Cloudflare'in çözülmesini bekle
+        time.sleep(10)
         
         try:
             tv_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'TV')]")
