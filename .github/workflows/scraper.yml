@@ -20,11 +20,18 @@ jobs:
           python-version: '3.11'
 
       - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run Scraper
         run: python scraper.py
+
+      - name: Upload Debug Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-dosyalari
+          path: |
+            sayfa_goruntusu.png
+            sayfa_kaynagi.html
 
       - name: Push Changes
         run: |
@@ -37,6 +44,6 @@ jobs:
             exit 0
           fi
           
-          git commit -m "🤖 Ardaspor Listesi Guncellendi"
+          git commit -m "🤖 Ardaspor Listesi Guncellendi (Debug)"
           git pull --rebase origin main
           git push
