@@ -1,38 +1,30 @@
 import time
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 
-chrome_options = Options()
-chrome_options.add_argument("--headless=new")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--window-size=1920,1080")
-chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
-
 def get_channels():
-    print("[*] Görünmez tarayıcı başlatılıyor...")
-    driver = webdriver.Chrome(options=chrome_options)
+    print("[*] Gizli tarayıcı başlatılıyor...")
+    options = uc.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # undetected-chromedriver kullanarak başlat
+    driver = uc.Chrome(options=options)
     m3u_list = ["#EXTM3U"]
     
     try:
         driver.get("https://ardaspor39.top")
-        # Sayfanın tam yüklenmesi için biraz daha uzun bekle
-        time.sleep(10)
+        time.sleep(10) # Cloudflare'in çözülmesini bekle
         
-        # 1. Botun ne gördüğünü anlamak için ekran görüntüsü al
-        driver.save_screenshot("sayfa_goruntusu.png")
-        print("[+] Ekran görüntüsü alındı.")
-        
-        # 2. Sayfanın HTML kaynağını kaydet (Neyi indirdiğini görmek için)
-        with open("sayfa_kaynagi.html", "w", encoding="utf-8") as f:
-            f.write(driver.page_source)
-        print("[+] Sayfa kaynağı kaydedildi.")
+        try:
+            tv_tab = driver.find_element(By.XPATH, "//*[contains(text(), 'TV')]")
+            tv_tab.click()
+            time.sleep(5)
+        except:
+            pass
 
-        # 3. Kanal linklerini aramaya çalış
         elements = driver.find_elements(By.CSS_SELECTOR, "a[href*='/channel/']")
-        print(f"[*] Bulunan potansiyel kanal linki sayısı: {len(elements)}")
         
         for el in elements:
             try:
