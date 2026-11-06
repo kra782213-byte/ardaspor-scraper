@@ -12,6 +12,7 @@ chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64
 
 def get_channels():
     print("[*] Görünmez tarayıcı başlatılıyor...")
+    # Selenium Manager, sürücüyü ve tarayıcıyı otomatik eşleştirecek
     driver = webdriver.Chrome(options=chrome_options)
     m3u_list = ["#EXTM3U"]
     
@@ -24,7 +25,7 @@ def get_channels():
             tv_tab.click()
             time.sleep(5)
         except Exception as e:
-            print("[-] TV sekmesi bulunamadı.")
+            print("[-] TV sekmesi bulunamadı veya tıklanamadı.")
 
         elements = driver.find_elements(By.CSS_SELECTOR, "a[href*='/channel/']")
         
@@ -38,7 +39,6 @@ def get_channels():
                     name = f"Kanal {kanal_id}"
                     
                 m3u_list.append(f'#EXTINF:-1 group-title="Ardaspor", {name}')
-                # DİKKAT: Burası artık Ardaspor Vercel linkine gidiyor
                 m3u_list.append(f'https://arda-proxy.vercel.app/play/{kanal_id}')
             except:
                 pass
@@ -53,7 +53,6 @@ def get_channels():
 if __name__ == "__main__":
     m3u_content = get_channels()
     
-    # Listeyi dosyaya kaydet
     with open("ardaspor.m3u", "w", encoding="utf-8") as f:
         f.write(m3u_content)
     print("[+] Liste 'ardaspor.m3u' dosyasına kaydedildi.")
