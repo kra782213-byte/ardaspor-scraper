@@ -1,3 +1,4 @@
 selenium-wire
 undetected-chromedriver
 selenium
+blinker==1.6.2
